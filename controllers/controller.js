@@ -3,8 +3,8 @@ const {selectCategories} = require('../models/model.js')
 
 
 exports.getCategories = (req, res) => {
-    selectCategories().then((Categories) => {
-      res.send({ Categories });
+    selectCategories().then((categoriesArr) => {
+      res.send({ categoriesArr });
     })
     .catch((err) => {
         next(err)
