@@ -1,12 +1,17 @@
-const categories = require('../db/data/test-data/categories.js');
-const {selectCategories} = require('../models/model.js')
-
+const { selectCategories, selectReviews } = require("../models/model.js");
 
 exports.getCategories = (req, res) => {
-    selectCategories().then((categoriesArr) => {
+  selectCategories()
+    .then((categoriesArr) => {
       res.send({ categoriesArr });
     })
     .catch((err) => {
-        next(err)
+      next(err);
     });
-  };
+};
+
+exports.getReviews = (req, res) => {
+  selectReviews().then((reviews) => {
+    res.send({ reviews });
+  });
+};

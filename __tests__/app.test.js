@@ -1,16 +1,16 @@
 const request = require("supertest");
 const app = require("../app.js");
 const db = require("../db/connection.js");
-const seed = require('../db/seeds/seed.js')
-const testData = require('../db/data/test-data/index.js')
+const seed = require("../db/seeds/seed.js");
+const testData = require("../db/data/test-data/index.js");
 
 afterAll(() => {
   return db.end();
 });
 
 beforeEach(() => {
-    return seed(testData)
-})
+  return seed(testData);
+});
 
 describe("/api/categories", () => {
   test("GET - 200: responds with an array of category objects", () => {
@@ -18,7 +18,7 @@ describe("/api/categories", () => {
       .get("/api/categories")
       .expect(200)
       .then((res) => {
-        res.body.Categories.forEach((category) =>
+        res.body.categoriesArr.forEach((category) =>
           expect(category).toMatchObject({
             slug: expect.any(String),
             description: expect.any(String),
@@ -29,9 +29,29 @@ describe("/api/categories", () => {
 });
 
 describe("/api/test", () => {
-    test("ERR - 404 not found", () => {
-        return request(app)
-        .get("/api/test")
-        .expect(404)
-    })
-})
+  test("ERR - 404 not found", () => {
+    return request(app).get("/api/test").expect(404);
+  });
+});
+
+describe("/api/reviews", () => {
+  test("GET - 200: responds with an array of category objects", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then((res) => {
+        res.body.reviews.forEach((review) =>
+          expect(review).toMatchObject({
+            title: expect.any(String),
+            designer: expect.any(String),
+            owner: expect.any(String),
+            review_img_url: expect.any(String),
+            review_body: expect.any(String),
+            category: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+          })
+        );
+      });
+  });
+});
