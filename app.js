@@ -3,6 +3,7 @@ const {
   getCategories,
   getReviews,
   getReviewById,
+  getCommentsByReviewId,
 } = require("./controllers/controller.js");
 
 const app = express();
@@ -13,6 +14,8 @@ app.get("/api/reviews", getReviews);
 
 app.get("/api/reviews/:review_id", getReviewById);
 
+app.get("/api/reviews/:review_id/comments", getCommentsByReviewId);
+
 // for 404
 app.use((err, req, res, next) => {
   if (err.status && err.msg) {
@@ -22,8 +25,8 @@ app.use((err, req, res, next) => {
 
 // for 400
 app.use((err, req, res, next) => {
-  if (err.code === '22P02') {
-    res.status(400).send({ msg: 'bad request' });
+  if (err.code === "22P02") {
+    res.status(400).send({ msg: "bad request" });
   } else next(err);
 });
 

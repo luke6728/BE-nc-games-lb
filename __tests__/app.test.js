@@ -99,3 +99,50 @@ describe("/api/review/review_id", () => {
       });
   });
 });
+
+describe("/api/reviews/review_id/comments", () => {
+  test("GET - 200: responds with an object of specified review", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.comments).toMatchObject([
+          {
+            comment_id: 1,
+            body: "I loved this game too!",
+            review_id: 2,
+            author: "bainesface",
+            votes: 16,
+            created_at: expect.any(String),
+          },
+          {
+            comment_id: 4,
+            body: "EPIC board game!",
+            review_id: 2,
+            author: "bainesface",
+            votes: 16,
+            created_at: expect.any(String),
+          },
+          {
+            comment_id: 5,
+            body: "Now this is a story all about how, board games turned my life upside down",
+            review_id: 2,
+            author: "mallionaire",
+            votes: 13,
+            created_at: expect.any(String),
+          },
+        ]);
+      });
+  });
+});
+
+describe("/api/review/review_id/comments", () => {
+  test("ERR - 404 no comment available for review id", () => {
+    return request(app)
+      .get("/api/reviews/1/comments")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("no comments for this review id");
+      });
+  });
+});
