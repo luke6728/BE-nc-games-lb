@@ -1,0 +1,8 @@
+You are now connected to database "nc_games" as user "lukeb".
+ comment_id |                                                                          body                                                                           | review_id |   author   | votes |       created_at       
+------------+---------------------------------------------------------------------------------------------------------------------------------------------------------+-----------+------------+-------+------------------------
+         59 | Quis duis mollit ad enim deserunt.                                                                                                                      |         1 | jessjelly  |     3 | 2021-03-27 19:48:58.11
+         60 | Laboris nostrud ea ex occaecat aute quis consectetur anim.                                                                                              |         1 | cooljmessy |    17 | 2021-03-27 14:15:38.11
+         61 | Consequat nisi dolor nulla esse sunt eu ipsum laborum deserunt duis. Ffugiat sint et proident ex do consequat est. Nisi minim laboris mollit cupidatat? |         1 | weegembump |     1 | 2021-03-27 14:15:36.11
+(3 rows)
+
