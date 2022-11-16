@@ -78,13 +78,24 @@ describe("/api/reviews/review_id", () => {
   });
 });
 
-describe.only("/api/review/review_id", () => {
+describe("/api/review/review_id", () => {
   test("ERR - 404 not found - review ID", () => {
     return request(app)
       .get("/api/reviews/99")
       .expect(404)
       .then((res) => {
         expect(res.body.msg).toBe("invalid review id");
+      });
+  });
+});
+
+describe("/api/review/review_id", () => {
+  test("ERR - 400 bad request, string input", () => {
+    return request(app)
+      .get("/api/reviews/test")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("bad request");
       });
   });
 });
