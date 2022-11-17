@@ -3,6 +3,7 @@ const {
   selectReviews,
   selectReviewById,
   selectCommentsByReviewId,
+  insertCommentByReviewId,
 } = require("../models/model.js");
 
 exports.getCategories = (req, res, next) => {
@@ -42,3 +43,20 @@ exports.getCommentsByReviewId = (req, res, next) => {
       next(err);
     });
 };
+
+exports.postCommentByReviewId = (req, res, next) => {
+  const { review_id } = req.params;
+  const newReview = {
+    body: req.body.body,
+    votes: 0,
+    author: req.body.username,
+    review_id: review_id,
+    created_at: new Date(1610964545411),}
+  insertCommentByReviewId(newReview)
+    .then((comment) => {
+      res.status(201).send({ comment });
+    })
+    .catch((err) => {
+      next(err);
+    });
+}

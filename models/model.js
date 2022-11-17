@@ -41,10 +41,25 @@ const checkReviewExists = (review_id) => {
 
 exports.selectCommentsByReviewId = (review_id) => {
   return checkReviewExists(review_id).then(() => {
-  return db
-    .query(`SELECT * FROM comments WHERE review_id = $1;`, [review_id])
-    .then((results) => {
-      return results.rows;
-    });
-  })
+    return db
+      .query(`SELECT * FROM comments WHERE review_id = $1;`, [review_id])
+      .then((results) => {
+        return results.rows;
+      });
+  });
+};
+
+exports.insertCommentByReviewId = (newComment) => {
+  const { body, votes, author, review_id, created_at } = newComment;
+  return checkReviewExists(review_id).then(() => {
+    return db
+      .query(
+        `INSERT INTO comments (body, votes, author, review_id, created_at)
+    VALUES($1, $2, $3, $4, $5) RETURNING *;`,
+        [body, votes, author, review_id, created_at]
+      )
+      .then((result) => {
+        return result.rows[0];
+      });
+  });
 };
