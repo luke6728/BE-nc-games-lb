@@ -168,3 +168,28 @@ describe("/api/review/review_id/comments", () => {
       });
   });
 });
+
+describe("POST /api/review/review_id/comments", () => {
+test("POST - 201: add a comment to the database and respond with newly created comment", () => {
+  const newComment = {
+    body: 'WOW best game this year!',
+    votes: 28,
+    author: 'luke6728',
+    review_id: 3,
+    created_at: new Date(1610964545411),
+  };
+  return request(app)
+    .post("/api/restaurants")
+    .send(newRestaurant)
+    .expect(201)
+    .then((res) => {
+      expect(res.body.restaurant).toMatchObject({
+        restaurant_id: 9,
+        restaurant_name: "The Codfather",
+        area_id: 2,
+        cuisine: "British",
+        website: "www.thecodfather.com",
+      });
+    });
+});
+});
