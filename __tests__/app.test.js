@@ -192,6 +192,19 @@ describe("POST /api/review/review_id/comments", () => {
         expect(res.body.msg).toBe('bad request')
       })
   })
+  test("ERR - 404 invalid username", () => {
+    const newComment = {
+      body: "WOW best game this year!",
+      username: "luke6728",
+    };
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(newComment)
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("invalid username");
+      });
+  });
   test("ERR - 404 no review available for comment post", () => {
     const newComment = {
       body: "WOW best game this year!",
