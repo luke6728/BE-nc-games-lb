@@ -115,6 +115,28 @@ describe("/api/reviews/review_id", () => {
         });
       });
   });
+  test(" PATCH - 400  when no info passed, respond with 400", () => {
+    const updatedInfo = {}
+    return request(app)
+      .patch("/api/reviews/1")
+      .send(updatedInfo)
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe('bad request')
+      })
+  });
+  test(" PATCH - 400  when incorrect info passed, respond with 400", () => {
+    const updatedInfo = {
+      inc_votes: 'test'
+    }
+    return request(app)
+      .patch("/api/reviews/1")
+      .send(updatedInfo)
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe('bad request')
+      })
+  });
 });
 
 describe("/api/reviews/review_id/comments", () => {

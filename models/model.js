@@ -64,19 +64,15 @@ exports.insertCommentByReviewId = (newComment) => {
   });
 };
 
-const getReviewVots = () => {
+exports.updateReviewById = (review_id, inc_votes) => {
   return db
-    .query(`SELECT votes FROM reviews WHERE review_id = $1;`, [review_id])
-    .then((res) => {
-      if (res.rows.length === 0) {
-        return Promise.reject({
-          status: 404,
-          msg: "invalid review id",
-        });
-      }
+    .query(
+      `UPDATE reviews 
+      SET votes = votes + $1 
+      WHERE review_id = $2 RETURNING *`,
+      [inc_votes, review_id]
+    )
+    .then((results) => {
+      return results.rows[0];
     });
 };
-
-exports.updateReviewById = () => {
-
-}
