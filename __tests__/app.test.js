@@ -136,13 +136,35 @@ describe("/api/reviews/review_id/comments", () => {
   });
 });
 
+describe("/api/reviews/review_id/comments", () => {
+  test("GET - 200: responds with an empty array when no comments are available", () => {
+    return request(app)
+      .get("/api/reviews/1/comments")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.comments).toMatchObject([]);
+      });
+  });
+});
+
 describe("/api/review/review_id/comments", () => {
   test("ERR - 404 no comment available for review id", () => {
     return request(app)
-      .get("/api/reviews/1/comments")
+      .get("/api/reviews/99/comments")
       .expect(404)
       .then((res) => {
-        expect(res.body.msg).toBe("no comments for this review id");
+        expect(res.body.msg).toBe("invalid review id");
+      });
+  });
+});
+
+describe("/api/review/review_id/comments", () => {
+  test("ERR - 400 bad request, string input", () => {
+    return request(app)
+      .get("/api/reviews/test/comments")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("bad request");
       });
   });
 });

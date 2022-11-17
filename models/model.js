@@ -26,16 +26,25 @@ exports.selectReviewById = (review_id) => {
     });
 };
 
+const checkReviewExists = (review_id) => {
+  return db
+    .query(`SELECT * FROM reviews WHERE review_id = $1;`, [review_id])
+    .then((res) => {
+      if (res.rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "invalid review id",
+        });
+      }
+    });
+};
+
 exports.selectCommentsByReviewId = (review_id) => {
+  return checkReviewExists(review_id).then(() => {
   return db
     .query(`SELECT * FROM comments WHERE review_id = $1;`, [review_id])
     .then((results) => {
-      if (results.rows.length === 0) {
-        return Promise.reject({
-          status: 404,
-          msg: "no comments for this review id",
-        });
-      }
       return results.rows;
     });
+  })
 };
