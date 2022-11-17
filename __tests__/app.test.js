@@ -76,9 +76,7 @@ describe("/api/reviews/review_id", () => {
         });
       });
   });
-});
 
-describe("/api/review/review_id", () => {
   test("ERR - 404 not found - review ID", () => {
     return request(app)
       .get("/api/reviews/99")
@@ -87,9 +85,7 @@ describe("/api/review/review_id", () => {
         expect(res.body.msg).toBe("invalid review id");
       });
   });
-});
 
-describe("/api/review/review_id", () => {
   test("ERR - 400 bad request, string input", () => {
     return request(app)
       .get("/api/reviews/test")
@@ -136,7 +132,7 @@ describe("/api/reviews/review_id/comments", () => {
   });
 });
 
-describe("/api/reviews/review_id/comments", () => {
+describe("GET /api/reviews/review_id/comments", () => {
   test("GET - 200: responds with an empty array when no comments are available", () => {
     return request(app)
       .get("/api/reviews/1/comments")
@@ -145,9 +141,7 @@ describe("/api/reviews/review_id/comments", () => {
         expect(res.body.comments).toMatchObject([]);
       });
   });
-});
 
-describe("/api/review/review_id/comments", () => {
   test("ERR - 404 no comment available for review id", () => {
     return request(app)
       .get("/api/reviews/99/comments")
@@ -156,9 +150,7 @@ describe("/api/review/review_id/comments", () => {
         expect(res.body.msg).toBe("invalid review id");
       });
   });
-});
 
-describe("/api/review/review_id/comments", () => {
   test("ERR - 400 bad request, string input", () => {
     return request(app)
       .get("/api/reviews/test/comments")
@@ -168,3 +160,62 @@ describe("/api/review/review_id/comments", () => {
       });
   });
 });
+
+describe("POST /api/review/review_id/comments", () => {
+  test("POST - 201: add a comment to the database and respond with newly created comment", () => {
+    const newComment = {
+      body: "WOW best game this year!",
+      username: "mallionaire",
+    };
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(newComment)
+      .expect(201)
+      .then((res) => {
+        expect(res.body.comment).toMatchObject({
+          comment_id: 7,
+          body: "WOW best game this year!",
+          votes: 0,
+          author: "mallionaire",
+          review_id: 1,
+          created_at: expect.any(String),
+        });
+      });
+  });
+  test("ERR - 400: when no info passed, respond with 400", () => {
+    const newComment = {};
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(newComment)
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe('bad request')
+      })
+  })
+  test("ERR - 404 invalid username", () => {
+    const newComment = {
+      body: "WOW best game this year!",
+      username: "luke6728",
+    };
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(newComment)
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("invalid username");
+      });
+  });
+  test("ERR - 404 no review available for comment post", () => {
+    const newComment = {
+      body: "WOW best game this year!",
+      username: "mallionaire",
+    };
+    return request(app)
+      .post("/api/reviews/99/comments")
+      .send(newComment)
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("invalid review id");
+      });
+  });
+})
