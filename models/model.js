@@ -49,19 +49,35 @@ exports.selectCommentsByReviewId = (review_id) => {
   });
 };
 
+const checkUsername = (newComment) => {
+  const {author} = newComment
+  return db
+    .query(`SELECT * FROM users WHERE username = $1;`, [author])
+    .then((res) => {
+      if (res.rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "invalid username",
+        });
+      }
+    });
+};
+
 exports.insertCommentByReviewId = (newComment) => {
-  const { body, votes, author, review_id, created_at } = newComment;
+  const { body, author, review_id } = newComment;
+  return checkUsername(newComment).then(() => { 
   return checkReviewExists(review_id).then(() => {
     return db
       .query(
-        `INSERT INTO comments (body, votes, author, review_id, created_at)
-    VALUES($1, $2, $3, $4, $5) RETURNING *;`,
-        [body, votes, author, review_id, created_at]
+        `INSERT INTO comments (body, author, review_id)
+    VALUES($1, $2, $3) RETURNING *;`,
+        [body, author, review_id]
       )
       .then((result) => {
         return result.rows[0];
       });
   });
+})
 };
 
 exports.updateReviewById = (review_id, inc_votes) => {

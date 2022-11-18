@@ -47,12 +47,14 @@ exports.getCommentsByReviewId = (req, res, next) => {
 
 exports.postCommentByReviewId = (req, res, next) => {
   const { review_id } = req.params;
+  if(req.body.author === undefined && req.body.body === undefined){
+    res.status(400).send({ msg: "bad request" })
+  }
+  else{
   const newReview = {
     body: req.body.body,
-    votes: 0,
     author: req.body.username,
-    review_id: review_id,
-    created_at: new Date(1610964545411),}
+    review_id: review_id,}
   insertCommentByReviewId(newReview)
     .then((comment) => {
       res.status(201).send({ comment });
@@ -60,6 +62,7 @@ exports.postCommentByReviewId = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+
 }
 
 exports.patchReviewById = (req, res, next) => {
