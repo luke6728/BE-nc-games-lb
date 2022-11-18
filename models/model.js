@@ -14,7 +14,14 @@ exports.selectReviews = () => {
 
 exports.selectReviewById = (review_id) => {
   return db
-    .query(`SELECT * FROM reviews WHERE review_id = $1;`, [review_id])
+    .query(
+      `select title, designer, owner, review_img_url, review_body, category, reviews.created_at, reviews.votes, reviews.review_id, count(comments.review_id) as comment_count
+    from reviews
+    left join comments on reviews.review_id = comments.review_id
+    where reviews.review_id = $1
+    GROUP BY reviews.review_id;`,
+      [review_id]
+    )
     .then((results) => {
       if (results.rows.length === 0) {
         return Promise.reject({
@@ -50,7 +57,7 @@ exports.selectCommentsByReviewId = (review_id) => {
 };
 
 const checkUsername = (newComment) => {
-  const {author} = newComment
+  const { author } = newComment;
   return db
     .query(`SELECT * FROM users WHERE username = $1;`, [author])
     .then((res) => {
@@ -65,34 +72,34 @@ const checkUsername = (newComment) => {
 
 exports.insertCommentByReviewId = (newComment) => {
   const { body, author, review_id } = newComment;
-  return checkUsername(newComment).then(() => { 
-  return checkReviewExists(review_id).then(() => {
-    return db
-      .query(
-        `INSERT INTO comments (body, author, review_id)
+  return checkUsername(newComment).then(() => {
+    return checkReviewExists(review_id).then(() => {
+      return db
+        .query(
+          `INSERT INTO comments (body, author, review_id)
     VALUES($1, $2, $3) RETURNING *;`,
-        [body, author, review_id]
-      )
-      .then((result) => {
-        return result.rows[0];
-      });
+          [body, author, review_id]
+        )
+        .then((result) => {
+          return result.rows[0];
+        });
+    });
   });
-})
 };
 
 exports.updateReviewById = (review_id, inc_votes) => {
   return checkReviewExists(review_id).then(() => {
-  return db
-    .query(
-      `UPDATE reviews 
+    return db
+      .query(
+        `UPDATE reviews 
       SET votes = votes + $1 
       WHERE review_id = $2 RETURNING *`,
-      [inc_votes, review_id]
-    )
-    .then((results) => {
-      return results.rows[0];
-    });
-  })
+        [inc_votes, review_id]
+      )
+      .then((results) => {
+        return results.rows[0];
+      });
+  });
 };
 
 exports.selectUsers = () => {
