@@ -116,36 +116,36 @@ describe("/api/reviews/review_id", () => {
       });
   });
   test(" PATCH - 400  when no info passed, respond with 400", () => {
-    const updatedInfo = {}
+    const updatedInfo = {};
     return request(app)
       .patch("/api/reviews/1")
       .send(updatedInfo)
       .expect(400)
       .then((res) => {
-        expect(res.body.msg).toBe('bad request')
-      })
+        expect(res.body.msg).toBe("bad request");
+      });
   });
   test(" PATCH - 400  when incorrect info passed, respond with 400", () => {
     const updatedInfo = {
-      inc_votes: 'test'
-    }
+      inc_votes: "test",
+    };
     return request(app)
       .patch("/api/reviews/1")
       .send(updatedInfo)
       .expect(400)
       .then((res) => {
-        expect(res.body.msg).toBe('bad request')
-      })
+        expect(res.body.msg).toBe("bad request");
+      });
   });
   test(" PATCH - 404 not found - review ID", () => {
-    const updatedInfo = { inc_votes: 2 }
+    const updatedInfo = { inc_votes: 2 };
     return request(app)
       .patch("/api/reviews/99")
       .send(updatedInfo)
       .expect(404)
       .then((res) => {
-        expect(res.body.msg).toBe("invalid review id")
-      })
+        expect(res.body.msg).toBe("invalid review id");
+      });
   });
   test("ERR - 400 bad request, string input", () => {
     return request(app)
@@ -251,8 +251,8 @@ describe("POST /api/review/review_id/comments", () => {
       .expect(400)
       .then((res) => {
         expect(res.body.msg).toBe("bad request");
-      })
-  })
+      });
+  });
   test("ERR - 404 invalid username", () => {
     const newComment = {
       body: "WOW best game this year!",
@@ -277,6 +277,23 @@ describe("POST /api/review/review_id/comments", () => {
       .expect(404)
       .then((res) => {
         expect(res.body.msg).toBe("invalid review id");
+      });
+  });
+});
+
+describe("/api/users", () => {
+  test("GET /api/users", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then((res) => {
+        res.body.users.forEach((user) =>
+          expect(user).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          })
+        );
       });
   });
 });
