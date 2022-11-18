@@ -73,7 +73,6 @@ describe("/api/reviews/review_id", () => {
           created_at: expect.any(String),
           votes: 1,
           review_id: 1,
-          comment_count: "0"
         });
       });
   });
