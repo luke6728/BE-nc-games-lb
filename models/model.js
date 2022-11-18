@@ -79,3 +79,18 @@ exports.insertCommentByReviewId = (newComment) => {
   });
 })
 };
+
+exports.updateReviewById = (review_id, inc_votes) => {
+  return checkReviewExists(review_id).then(() => {
+  return db
+    .query(
+      `UPDATE reviews 
+      SET votes = votes + $1 
+      WHERE review_id = $2 RETURNING *`,
+      [inc_votes, review_id]
+    )
+    .then((results) => {
+      return results.rows[0];
+    });
+  })
+};

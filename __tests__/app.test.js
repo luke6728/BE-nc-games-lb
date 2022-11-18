@@ -94,6 +94,67 @@ describe("/api/reviews/review_id", () => {
         expect(res.body.msg).toBe("bad request");
       });
   });
+
+  test("PATCH - 200: when correct info passed, update votes field, respond with updated review object", () => {
+    const updatedInfo = { inc_votes: 2 };
+    return request(app)
+      .patch("/api/reviews/1")
+      .send(updatedInfo)
+      .expect(200)
+      .then((res) => {
+        expect(res.body.review).toMatchObject({
+          title: "Agricola",
+          designer: "Uwe Rosenberg",
+          owner: "mallionaire",
+          review_img_url:
+            "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+          review_body: "Farmyard fun!",
+          category: "euro game",
+          created_at: expect.any(String),
+          votes: 3,
+        });
+      });
+  });
+  test(" PATCH - 400  when no info passed, respond with 400", () => {
+    const updatedInfo = {}
+    return request(app)
+      .patch("/api/reviews/1")
+      .send(updatedInfo)
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe('bad request')
+      })
+  });
+  test(" PATCH - 400  when incorrect info passed, respond with 400", () => {
+    const updatedInfo = {
+      inc_votes: 'test'
+    }
+    return request(app)
+      .patch("/api/reviews/1")
+      .send(updatedInfo)
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe('bad request')
+      })
+  });
+  test(" PATCH - 404 not found - review ID", () => {
+    const updatedInfo = { inc_votes: 2 }
+    return request(app)
+      .patch("/api/reviews/99")
+      .send(updatedInfo)
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("invalid review id")
+      })
+  });
+  test("ERR - 400 bad request, string input", () => {
+    return request(app)
+      .patch("/api/reviews/test")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("bad request");
+      });
+  });
 });
 
 describe("/api/reviews/review_id/comments", () => {
@@ -189,7 +250,7 @@ describe("POST /api/review/review_id/comments", () => {
       .send(newComment)
       .expect(400)
       .then((res) => {
-        expect(res.body.msg).toBe('bad request')
+        expect(res.body.msg).toBe("bad request");
       })
   })
   test("ERR - 404 invalid username", () => {
@@ -218,4 +279,4 @@ describe("POST /api/review/review_id/comments", () => {
         expect(res.body.msg).toBe("invalid review id");
       });
   });
-})
+});
