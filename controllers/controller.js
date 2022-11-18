@@ -63,16 +63,16 @@ exports.postCommentByReviewId = (req, res, next) => {
         next(err);
       });
   }
+};
 
-  exports.patchReviewById = (req, res, next) => {
-    const { inc_votes } = req.body;
-    const { review_id } = req.params;
-    updateReviewById(review_id, inc_votes)
-      .then((review) => {
-        res.status(200).send({ review });
-      })
-      .catch((err) => {
-        next(err);
-      });
-  };
+exports.patchReviewById = (req, res, next) => {
+  const { inc_votes } = req.body;
+  const { review_id } = req.params;
+  updateReviewById(review_id, inc_votes)
+    .then((review) => {
+      res.status(200).send({ review });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
