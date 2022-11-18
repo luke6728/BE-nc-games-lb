@@ -65,6 +65,7 @@ exports.insertCommentByReviewId = (newComment) => {
 };
 
 exports.updateReviewById = (review_id, inc_votes) => {
+  return checkReviewExists(review_id).then(() => {
   return db
     .query(
       `UPDATE reviews 
@@ -75,4 +76,5 @@ exports.updateReviewById = (review_id, inc_votes) => {
     .then((results) => {
       return results.rows[0];
     });
+  })
 };

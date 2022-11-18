@@ -137,6 +137,24 @@ describe("/api/reviews/review_id", () => {
         expect(res.body.msg).toBe('bad request')
       })
   });
+  test(" PATCH - 404 not found - review ID", () => {
+    const updatedInfo = { inc_votes: 2 }
+    return request(app)
+      .patch("/api/reviews/99")
+      .send(updatedInfo)
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("invalid review id")
+      })
+  });
+  test("ERR - 400 bad request, string input", () => {
+    return request(app)
+      .patch("/api/reviews/test")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("bad request");
+      });
+  });
 });
 
 describe("/api/reviews/review_id/comments", () => {
